@@ -348,6 +348,116 @@ onix = [
   ]
 ]
 
+onixImportFields = [
+        LicenseDetail: [
+                LicenseIdentifier: [
+                        LicenseIdType: [
+                                field: [name: 'LicenseIdType', description: 'A controlled value identifying a scheme from which a license identifier is taken']
+                        ],
+                        IDTypeName:[
+                                field: [name: 'IDTypeName', description: 'A name that identifies a proprietary identifier scheme when the value in the <LicenseIDType> element indicates a proprietary scheme']
+                        ],
+                        IDValue: [
+                                field: [name: 'IDValue', description: 'An identifier of the type specified in the <LicenseIDType> element']
+                        ]
+                ],
+                Description: [
+                        field: [name: 'Description', description: 'A name or short description given to a license']
+                ],
+                LicenseStatus: [
+                        field: [name: 'LicenseStatus', description: 'A controlled value indicating the status of a license']
+                ],
+                LicenseRelatedAgent: [
+                        LicenseAgentRelator: [
+                                field: [name: 'LicenseAgentRelator', description: 'A controlled value specifying a relationship between a license and an agent or agent class']
+                        ],
+                        RelatedAgent: [
+                                field: [name: 'RelatedAgent', description: 'A label assigned in an Agent Definition to identify an agent or agent class']
+                        ]
+                ],
+                LicenseRelatedResource: [
+                        LicenseResourceRelator: [
+                                field: [name: 'LicenseResourceRelator', description: 'A controlled value specifying a relationship between a license and a resource']
+                        ],
+                        RelatedResource: [
+                                field: [name: 'RelatedResource', description: 'A label assigned in a Resource Definition to identify a resource']
+                        ]
+                ],
+                LicenseRelatedTimePoint: [
+                        LicenseTimePointRelator: [
+                                field: [name: 'LicenseTimePointRelator', description: 'A controlled value specifying a relationship between a license and a time point']
+                        ],
+                        RelatedTimePoint: [
+                                field: [name: 'RelatedTimePoint', description: 'A label assigned in a TimePoint Definition to identify a time point']
+                        ]
+                ],
+                LicenseRelatedPlace: [
+                        LicensePlaceRelator: [
+                                field: [name: 'LicensePlaceRelator', description: 'A controlled value specifying a relationship between a license and a place']
+                        ],
+                        RelatedPlace: [
+                                field: [name: 'RelatedPlace', description: 'A label assigned in a Place Definition to identify a place']
+                        ]
+                ]
+        ],
+        UsageTerms: [
+                Usage: [
+                        UsageType: [
+                                field: [name: 'UsageType', description: 'A controlled value that specifies a type of a usage (and by implication a usage verb)']
+                        ],
+                        UsageStatus: [
+                                field: [name: 'UsageStatus', description: 'A controlled value that specifies whether a usage is permitted, prohibited, etc']
+                        ],
+                        Authority: [
+                                field: [name: 'Authority', description: 'The entity responsible for the interpretation of a usage term, if not the expression Authority; represented by a label assigned to it in an Agent Definition']
+                        ],
+                        UsageQuantity: [
+                                UsageQuantityType: [
+                                        field: [name: 'UsageQuantityType', description: 'A controlled value specifying a type of a usage quantity']
+                                ],
+                                QuantityDetail: [
+                                        Proximity: [
+                                                field: [name: 'Proximity', description: 'A controlled value specifying a relationship between a quantity and the <Value> stated in the composite, eg “is less than”, “is not more than”; the default is “is exactly”']
+                                        ],
+                                        Value: [
+                                                field: [name: 'Value', description: 'A decimal numeric value']
+                                        ],
+                                        QuantityUnit: [
+                                                field: [name: 'QuantityUnit', description: 'A controlled value specifying a unit of quantity']
+                                        ],
+                                        ReferenceUnit: [
+                                                field: [name: 'ReferenceUnit', description: 'A controlled value specifying a unit to which a quantity refers, if this is not implied by the <UsageQuantityType>']
+                                        ]
+                                ]
+                        ]
+                ],
+        ],
+        SupplyTerm: [
+                SupplyTermType: [
+                        field: [name: 'SupplyTermType', description: 'A controlled value that specifies a type of a supply term']
+                ],
+                TermStatus: [
+                        field: [name: 'TermStatus', description: 'A controlled value that specifies a status of a term']
+                ],
+                Authority: [
+                        field: [name: 'Authority', description: 'The entity responsible for the interpretation of a supply term, if not the expression Authority; represented by a label assigned to it in an Agent Definition']
+                ]
+        ],
+        GeneralTerms: [
+                GeneralTerm: [
+                        GeneralTermType: [
+                                field: [name: 'GeneralTermType', description: 'A controlled value that specifies a type of a general term, eg limitation of liability']
+                        ],
+                        TermStatus: [
+                                field: [name: 'TermStatus', description: 'A controlled value that specifies a status of a term']
+                        ],
+                        Authority: [
+                                field: [name: 'Authority', description: 'The entity responsible for the interpretation of a general term, if not the expression Authority; represented by a label assigned to it in an Agent Definition']
+                        ]
+                ]
+        ]
+]
+
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
 grails.mime.types = [

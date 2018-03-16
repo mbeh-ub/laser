@@ -170,7 +170,15 @@ class LicenseImportController {
       return onix_parse_result
     } else {
       // Extract the description,
+      def response = new XmlSlurper().parse(file.inputStream)
       onix_parse_result.description = new XmlSlurper().parse(file.inputStream).LicenseDetail.Description.text()
+
+      // extract list of path to fields to be imported from onix-pl
+      def pathList = buildImportPath(grailsApplication.config.onixImportFields)
+      pathList.each {
+          println "item: $it"
+      }
+
     }
     // Record mime type, filename
     onix_parse_result.upload_mime_type = file?.contentType
@@ -179,7 +187,51 @@ class LicenseImportController {
     onix_parse_result
   }
 
-  /**
+  /** build path for import fields from onix-pl file */
+  @Secured(['ROLE_DATAMANAGER', 'ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def buildImportPath(importFieldsMap) {
+      def pathList = []
+
+      importFieldsMap.each { key, value ->
+          if (key != 'field') {
+              pathList.add(key)
+              def tempList = iterateEach(value)
+              if (tempList.size() > 0) {
+                  pathList.add(tempList)
+              }
+          }
+      }
+
+      pathList.each {
+          log.debug("item: ${it}")
+      }
+
+      pathList
+  }
+
+  /** recursive function for retreaving keys of map with each */
+  @Secured(['ROLE_DATAMANAGER', 'ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+  def iterateEach(fieldsMap) {
+      def fieldPath = []
+
+      fieldsMap.each { key, value ->
+          if (key != 'field') {
+              fieldPath.add(key)
+              def tempList = iterateEach(value)
+              if (tempList.size() > 0) {
+                  fieldPath.add(tempList)
+              }
+          }
+      }
+
+      fieldPath.each {
+          log.debug("item: ${it}")
+      }
+
+      fieldPath
+  }
+
+        /**
    * Check whether an OPL exists with the same title.
    * --Check whether the license already points to an OPL or if one exists with
    * the same title.--
