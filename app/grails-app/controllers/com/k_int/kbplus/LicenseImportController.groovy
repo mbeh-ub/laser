@@ -169,17 +169,14 @@ class LicenseImportController {
       onix_parse_result.errors.add("Detected input character stream encoding: ${charset}. Expected UTF-8.")
       return onix_parse_result
     } else {
-      // Extract the description,
+      // Extract the description, (original k-int code)
       def response = new XmlSlurper().parse(file.inputStream)
       onix_parse_result.description = new XmlSlurper().parse(file.inputStream).LicenseDetail.Description.text()
 
       // extract list of path to fields to be imported from onix-pl
       def pathList = buildImportPath(grailsApplication.config.onixImportFields)
-      pathList.each {
-          println "item: $it"
-      }
-
     }
+
     // Record mime type, filename
     onix_parse_result.upload_mime_type = file?.contentType
     onix_parse_result.upload_filename = file?.originalFilename
@@ -187,49 +184,66 @@ class LicenseImportController {
     onix_parse_result
   }
 
-  /** build path for import fields from onix-pl file */
-  @Secured(['ROLE_DATAMANAGER', 'ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def buildImportPath(importFieldsMap) {
-      def pathList = []
-
-      importFieldsMap.each { key, value ->
-          if (key != 'field') {
-              pathList.add(key)
-              def tempList = iterateEach(value)
-              if (tempList.size() > 0) {
-                  pathList.add(tempList)
-              }
-          }
+    /** load fields from onix specified in config */
+     @Secured(['ROLE_DATAMANAGER', 'ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+      def loadFields(pathList) {
+         pathList.each { key, value ->
+             String fieldPath = key
+             fieldPath.concat(concatPath(value))
+             log.debug(fieldPath)
+         }
       }
 
-      pathList.each {
-          log.debug("item: ${it}")
-      }
+    /** concat path */
+    @Secured(['ROLE_DATAMANAGER', 'ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def concatPath(pathList) {
+        String fieldPath
+        pathList.each { key, value ->
+            fieldPath.concat("${key}.")
+            log.debug(fieldPath)
+            fieldPath.concat(concatPath(value))
+        }
 
-      pathList
-  }
+        fieldPath
+    }
 
-  /** recursive function for retreaving keys of map with each */
+  /** load fields from onix specified in config
   @Secured(['ROLE_DATAMANAGER', 'ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
-  def iterateEach(fieldsMap) {
-      def fieldPath = []
-
+  def loadFields(fieldsMap) {
       fieldsMap.each { key, value ->
-          if (key != 'field') {
-              fieldPath.add(key)
-              def tempList = iterateEach(value)
-              if (tempList.size() > 0) {
-                  fieldPath.add(tempList)
-              }
-          }
+          def keyList = fieldsMap.keySet() as List
+          String fieldPath = keyList.join(".")
+          log.debug(fieldPath)
+          loadFields(value)
       }
+  } */
 
-      fieldPath.each {
-          log.debug("item: ${it}")
-      }
+    /** build path for import fields from onix-pl file */
 
-      fieldPath
-  }
+    @Secured(['ROLE_DATAMANAGER', 'ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def buildImportPath(importFieldsMap) {
+        def pathList = []
+
+        importFieldsMap.each { key, value ->
+            iterateEach(key, value, pathList)
+        }
+
+        pathList
+    }
+
+      /** recursive function for retreaving keys of map with each */
+    @Secured(['ROLE_DATAMANAGER', 'ROLE_ADMIN', 'IS_AUTHENTICATED_FULLY'])
+    def iterateEach(field, fieldMap, pathList) {
+
+        fieldMap.each { key, value ->
+            def gPath = field + "." + key
+            if (!value.empty) {
+                iterateEach(gPath, value, pathList)
+            } else {
+                pathList.add(gPath)
+            }
+        }
+    }
 
         /**
    * Check whether an OPL exists with the same title.
